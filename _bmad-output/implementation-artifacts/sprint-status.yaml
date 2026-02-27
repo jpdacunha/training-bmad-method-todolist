@@ -1,0 +1,93 @@
+# generated: 2026-02-27
+# project: training-bmad-method-todolist
+# project_key: NOKEY
+# tracking_system: file-system
+# story_location: _bmad-output/implementation-artifacts
+#
+# STATUS DEFINITIONS:
+# ==================
+# Epic Status:
+#   - backlog: Epic not yet started
+#   - in-progress: Epic actively being worked on
+#   - done: All stories in epic completed
+#
+# Epic Status Transitions:
+#   - backlog → in-progress: Automatically when first story is created (via create-story)
+#   - in-progress → done: Manually when all stories reach 'done' status
+#
+# Story Status:
+#   - backlog: Story only exists in epic file
+#   - ready-for-dev: Story file created in stories folder
+#   - in-progress: Developer actively working on implementation
+#   - review: Ready for code review (via Dev's code-review workflow)
+#   - done: Story completed
+#
+# Retrospective Status:
+#   - optional: Can be completed but not required
+#   - done: Retrospective has been completed
+#
+# WORKFLOW NOTES:
+# ===============
+# - Epic transitions to 'in-progress' automatically when first story is created
+# - Stories can be worked in parallel if team capacity allows
+# - SM typically creates next story after previous one is 'done' to incorporate learnings
+# - Dev moves story to 'review', then runs code-review (fresh context, different LLM recommended)
+
+generated: 2026-02-27
+project: training-bmad-method-todolist
+project_key: NOKEY
+tracking_system: file-system
+story_location: _bmad-output/implementation-artifacts
+
+development_status:
+  # Epic 1: Project Foundation & User Access
+  epic-1: in-progress
+  1-1-monorepo-initialization-and-project-scaffold: done
+  1-2-database-foundation-and-user-schema: backlog
+  1-3-oauth-authentication-backend: backlog
+  1-4-frontend-shell-and-authentication-ui: backlog
+  1-5-workspace-auto-creation-and-tenant-isolation: backlog
+  1-6-marketing-landing-page: backlog
+  epic-1-retrospective: optional
+
+  # Epic 2: Subject & Task Management
+  epic-2: backlog
+  2-1-subject-crud-backend: backlog
+  2-2-subject-management-ui: backlog
+  2-3-task-crud-backend: backlog
+  2-4-task-creation-and-editing-ui: backlog
+  2-5-task-state-machine-and-lifecycle-backend: backlog
+  2-6-task-state-management-ui: backlog
+  2-7-activity-log-and-traceability: backlog
+  epic-2-retrospective: optional
+
+  # Epic 3: Intelligent Dashboard & Prioritization
+  epic-3: backlog
+  3-1-re-prioritization-engine-backend: backlog
+  3-2-time-based-kanban-board-day-view: backlog
+  3-3-five-day-planning-view: backlog
+  3-4-dashboard-filtering-and-re-prioritization-feedback: backlog
+  epic-3-retrospective: optional
+
+  # Epic 4: Manual Override & Drag-and-Drop
+  epic-4: backlog
+  4-1-drag-and-drop-reordering-with-dnd-kit: backlog
+  4-2-pin-protection-and-override-notifications: backlog
+  4-3-pin-release-and-mobile-adaptation: backlog
+  epic-4-retrospective: optional
+
+  # Epic 5: Task Split & Filiation
+  epic-5: backlog
+  5-1-task-split-backend: backlog
+  5-2-task-split-ui: backlog
+  epic-5-retrospective: optional
+
+  # Epic 6: PWA & Offline Experience
+  epic-6: backlog
+  6-1-pwa-installation-and-offline-read-only-mode: backlog
+  epic-6-retrospective: optional
+
+  # Epic 7: Analytics & Validation Instrumentation
+  epic-7: backlog
+  7-1-lightweight-event-tracking: backlog
+  epic-7-retrospective: optional

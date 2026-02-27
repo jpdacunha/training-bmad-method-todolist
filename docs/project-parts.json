@@ -1,0 +1,49 @@
+{
+  "repository_type": "monorepo",
+  "parts": [
+    {
+      "part_id": "api",
+      "name": "API Service",
+      "root_path": "apps/api",
+      "project_type_id": "backend",
+      "language": "TypeScript",
+      "framework": "NestJS"
+    },
+    {
+      "part_id": "web",
+      "name": "Web App",
+      "root_path": "apps/web",
+      "project_type_id": "web",
+      "language": "TypeScript",
+      "framework": "React + Vite"
+    },
+    {
+      "part_id": "shared",
+      "name": "Shared Library",
+      "root_path": "packages/shared",
+      "project_type_id": "library",
+      "language": "TypeScript",
+      "framework": "Zod + Type Utilities"
+    }
+  ],
+  "integration_points": [
+    {
+      "from": "web",
+      "to": "api",
+      "type": "HTTP REST",
+      "details": "Vite dev proxy forwards /api to http://localhost:3000"
+    },
+    {
+      "from": "api",
+      "to": "shared",
+      "type": "workspace package import",
+      "details": "Consumes shared schemas/types from @training-bmad-method-todolist/shared"
+    },
+    {
+      "from": "web",
+      "to": "shared",
+      "type": "workspace package import",
+      "details": "Consumes shared schemas/types/constants from @training-bmad-method-todolist/shared"
+    }
+  ]
+}

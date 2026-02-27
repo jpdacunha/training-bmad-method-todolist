@@ -513,7 +513,7 @@ training-bmad-method-todolist/
 ├── .gitignore
 ├── .env.example                          ← env var documentation
 ├── .prettierrc
-├── .eslintrc.js
+├── .eslintrc.mjs
 ├── docker-compose.yml                    ← 3 services: api, web, db
 ├── docker-compose.prod.yml               ← production overrides
 ├── .github/

@@ -1,0 +1,25 @@
+{
+  "app": {
+    "title": "TodoList — Daily Execution Cockpit"
+  },
+  "common": {
+    "loading": "Loading...",
+    "error": "An error occurred",
+    "save": "Save",
+    "cancel": "Cancel",
+    "signOut": "Sign out",
+    "language": "Language",
+    "switchToFrench": "FR",
+    "switchToEnglish": "EN",
+    "toggleTheme": "Toggle theme"
+  },
+  "auth": {
+    "loginTitle": "Sign in to your workspace",
+    "loginWithGoogle": "Sign in with Google",
+    "loginWithGithub": "Sign in with GitHub"
+  },
+  "dashboard": {
+    "title": "Dashboard",
+    "empty": "Ready to organize your day? Click + to create your first task"
+  }
+}
