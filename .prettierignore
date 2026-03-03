@@ -1,0 +1,3 @@
+# BMAD directories — markdown files only
+_bmad/**/*.md
+_bmad-output/**/*.md
