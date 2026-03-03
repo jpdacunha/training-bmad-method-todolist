@@ -3,6 +3,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { AppModule } from './app.module';
 import { DATABASE_POOL } from './database/database.constants';
 import { setupTestEnv } from './test/setup-test-env';
+import { DATABASE_CONNECTIVITY_QUERY } from './constants/app.constants';
 
 describe('AppModule database bootstrap', () => {
   let app: INestApplication;
@@ -28,6 +29,6 @@ describe('AppModule database bootstrap', () => {
     app = moduleRef.createNestApplication();
     await app.init();
 
-    expect(query).toHaveBeenCalledWith('SELECT 1');
+    expect(query).toHaveBeenCalledWith(DATABASE_CONNECTIVITY_QUERY);
   });
 });

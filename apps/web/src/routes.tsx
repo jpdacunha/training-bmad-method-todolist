@@ -1,5 +1,6 @@
 import { BrowserRouter, Routes, Route } from 'react-router';
 import { AppLayout } from './layouts/app-layout';
+import { ROUTE_HOME, ROUTE_LOGIN } from './constants/app.constants';
 
 /**
  * Application routes
@@ -19,9 +20,9 @@ export function AppRoutes() {
     <BrowserRouter>
       <Routes>
         <Route element={<AppLayout />}>
-          <Route path="/" element={<PlaceholderDashboard />} />
+          <Route path={ROUTE_HOME} element={<PlaceholderDashboard />} />
         </Route>
-        <Route path="/login" element={<PlaceholderLogin />} />
+        <Route path={ROUTE_LOGIN} element={<PlaceholderLogin />} />
       </Routes>
     </BrowserRouter>
   );

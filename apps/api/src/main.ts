@@ -4,15 +4,16 @@ import cookieParser from 'cookie-parser';
 import { AppModule } from './app.module';
 import { EnvService } from './config/env.service';
 import { setupSwagger } from './swagger.config';
+import { API_GLOBAL_PREFIX, BOOTSTRAP_LOGGER_CONTEXT } from './constants/app.constants';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
-  const logger = new Logger('Bootstrap');
+  const logger = new Logger(BOOTSTRAP_LOGGER_CONTEXT);
 
   app.use(cookieParser());
 
   // Global prefix for all routes
-  app.setGlobalPrefix('api');
+  app.setGlobalPrefix(API_GLOBAL_PREFIX);
 
   // TODO: Story 1.2+ — Add global Zod validation pipe
   // app.useGlobalPipes(new ZodValidationPipe());

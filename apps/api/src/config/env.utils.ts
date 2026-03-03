@@ -1,3 +1,5 @@
+import { ENV_LOG_PREFIX } from '../constants/app.constants';
+
 export const REQUIRED_ENV_KEYS = [
   'DATABASE_URL',
   'JWT_SECRET',
@@ -17,7 +19,7 @@ export function getRequiredEnv(key: RequiredEnvKey): string {
   const value = process.env[key];
 
   if (!value) {
-    throw new Error(`[Env] Missing required environment variable: ${key}`);
+    throw new Error(`${ENV_LOG_PREFIX} Missing required environment variable: ${key}`);
   }
 
   return value;

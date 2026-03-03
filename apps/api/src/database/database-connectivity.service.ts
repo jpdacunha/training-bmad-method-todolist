@@ -1,6 +1,11 @@
 import { Inject, Injectable, Logger, OnApplicationBootstrap } from '@nestjs/common';
 import { Pool } from 'pg';
 import { DATABASE_POOL } from './database.constants';
+import {
+  DATABASE_CONNECTIVITY_QUERY,
+  DATABASE_CONNECTIVITY_SUCCESS_MESSAGE,
+  DATABASE_CONNECTIVITY_FAILURE_PREFIX,
+} from '../constants/app.constants';
 
 @Injectable()
 export class DatabaseConnectivityService implements OnApplicationBootstrap {
@@ -10,11 +15,11 @@ export class DatabaseConnectivityService implements OnApplicationBootstrap {
 
   async onApplicationBootstrap(): Promise<void> {
     try {
-      await this.pool.query('SELECT 1');
-      this.logger.log('PostgreSQL connectivity check passed via initialized pool.');
+      await this.pool.query(DATABASE_CONNECTIVITY_QUERY);
+      this.logger.log(DATABASE_CONNECTIVITY_SUCCESS_MESSAGE);
     } catch (error) {
       const message = error instanceof Error ? error.stack ?? error.message : String(error);
-      this.logger.error(`PostgreSQL connectivity check failed: ${message}`);
+      this.logger.error(`${DATABASE_CONNECTIVITY_FAILURE_PREFIX}${message}`);
       throw error;
     }
   }

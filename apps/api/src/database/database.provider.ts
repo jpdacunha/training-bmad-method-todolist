@@ -8,8 +8,9 @@ import {
 } from '@training-bmad-method-todolist/shared';
 import { DATABASE_CLIENT, DATABASE_POOL } from './database.constants';
 import { EnvService } from '../config/env.service';
+import { DATABASE_LOGGER_CONTEXT, DATABASE_INIT_MESSAGE } from '../constants/app.constants';
 
-const logger = new Logger('DatabaseProvider');
+const logger = new Logger(DATABASE_LOGGER_CONTEXT);
 
 const schema = {
   users,
@@ -29,7 +30,7 @@ export const databaseProviders = [
     provide: DATABASE_CLIENT,
     inject: [DATABASE_POOL],
     useFactory: (pool: Pool) => {
-      logger.log('Drizzle database client initialized.');
+      logger.log(DATABASE_INIT_MESSAGE);
 
       return drizzle(pool, { schema });
     },

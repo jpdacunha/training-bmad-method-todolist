@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { getRequiredEnv, REQUIRED_ENV_KEYS, type RequiredEnvKey } from './env.utils';
+import { NODE_ENV_PRODUCTION, NODE_ENV_KEY, ENV_LOG_PREFIX } from '../constants/app.constants';
 
 @Injectable()
 export class EnvService {
@@ -45,7 +46,7 @@ export class EnvService {
     const value = Number(this.getValue('PORT'));
 
     if (!Number.isInteger(value) || value <= 0) {
-      throw new Error('[Env] PORT must be a positive integer.');
+      throw new Error(`${ENV_LOG_PREFIX} PORT must be a positive integer.`);
     }
 
     return value;
@@ -56,7 +57,7 @@ export class EnvService {
   }
 
   isProduction(): boolean {
-    return process.env['NODE_ENV'] === 'production';
+    return process.env[NODE_ENV_KEY] === NODE_ENV_PRODUCTION;
   }
 
   private loadRequiredValues(): Record<RequiredEnvKey, string> {

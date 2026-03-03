@@ -4,6 +4,11 @@ import { ThrottlerModule } from '@nestjs/throttler';
 import request from 'supertest';
 import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
+import { API_GLOBAL_PREFIX } from '../../constants/app.constants';
+import {
+  OAUTH_STATE_COOKIE_PREFIX,
+  AUTH_COOKIE_PATH,
+} from './auth.constants';
 
 describe('AuthController rate limit', () => {
   let app: INestApplication;
@@ -26,14 +31,14 @@ describe('AuthController rate limit', () => {
             generateLoginResponse: jest.fn().mockReturnValue({
               redirectUrl: 'https://example.com/oauth',
               stateCookie: {
-                name: 'oauth_state_google',
+                name: `${OAUTH_STATE_COOKIE_PREFIX}google`,
                 value: 'state',
                 options: {
                   httpOnly: true,
                   secure: false,
                   sameSite: 'lax',
                   maxAge: 600_000,
-                  path: '/api/v1/auth',
+                  path: AUTH_COOKIE_PATH,
                 },
               },
             }),
@@ -43,7 +48,7 @@ describe('AuthController rate limit', () => {
     }).compile();
 
     app = moduleRef.createNestApplication();
-    app.setGlobalPrefix('api');
+    app.setGlobalPrefix(API_GLOBAL_PREFIX);
     await app.init();
   });
 

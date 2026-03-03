@@ -1,5 +1,11 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
+import {
+  LANGUAGE_EN,
+  LANGUAGE_FR,
+  LANGUAGE_DETECTION_PREFIX_FR,
+  STORE_KEY_LANGUAGE,
+} from '../constants/app.constants';
 
 /**
  * Language preference store
@@ -7,7 +13,7 @@ import { persist } from 'zustand/middleware';
  * Persisted in localStorage
  */
 
-type Language = 'en' | 'fr';
+type Language = typeof LANGUAGE_EN | typeof LANGUAGE_FR;
 
 interface LanguageState {
   language: Language;
@@ -18,11 +24,11 @@ export const useLanguageStore = create<LanguageState>()(
   persist(
     (set) => ({
       language:
-        typeof navigator !== 'undefined' && navigator.language.startsWith('fr') ? 'fr' : 'en',
+        typeof navigator !== 'undefined' && navigator.language.startsWith(LANGUAGE_DETECTION_PREFIX_FR) ? LANGUAGE_FR : LANGUAGE_EN,
       setLanguage: (lang: Language) => set({ language: lang }),
     }),
     {
-      name: 'language-store',
+      name: STORE_KEY_LANGUAGE,
     },
   ),
 );

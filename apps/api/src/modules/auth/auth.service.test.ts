@@ -3,6 +3,14 @@ import { NodePgDatabase } from 'drizzle-orm/node-postgres';
 import { AuthService } from './auth.service';
 import { EnvService } from '../../config/env.service';
 import { type DatabaseSchema } from '../../database/database.provider';
+import {
+  OAUTH_STATE_COOKIE_PREFIX,
+  REFRESH_TOKEN_COOKIE_NAME,
+  AUTH_ERROR_TITLE_UNAUTHORIZED,
+  RFC_7807_TYPE_ABOUT_BLANK,
+  AUTH_HTTP_STATUS_UNAUTHORIZED,
+  OAUTH_PROVIDER_GOOGLE,
+} from './auth.constants';
 
 type MockDb = NodePgDatabase<DatabaseSchema>;
 
@@ -41,7 +49,7 @@ describe('AuthService', () => {
     const result = service.generateLoginResponse('google');
 
     expect(result.redirectUrl).toContain('accounts.google.com');
-    expect(result.stateCookie.name).toBe('oauth_state_google');
+    expect(result.stateCookie.name).toBe(`${OAUTH_STATE_COOKIE_PREFIX}google`);
     expect(result.stateCookie.options.httpOnly).toBe(true);
   });
 
@@ -90,7 +98,7 @@ describe('AuthService', () => {
     expect(databaseClient.delete).toHaveBeenCalled();
     expect(databaseClient.insert).toHaveBeenCalled();
     expect(result.accessToken).toBe('signed-access-token');
-    expect(result.refreshCookie.name).toBe('refreshToken');
+    expect(result.refreshCookie.name).toBe(REFRESH_TOKEN_COOKIE_NAME);
   });
 
   it('refresh throws RFC 7807 unauthorized payload for invalid token', async () => {
@@ -106,11 +114,11 @@ describe('AuthService', () => {
 
     const service = new AuthService(databaseClient as unknown as MockDb, jwtService, envService);
 
-    await expect(service.refreshSession('refreshToken=invalid')).rejects.toMatchObject({
+    await expect(service.refreshSession(`${REFRESH_TOKEN_COOKIE_NAME}=invalid`)).rejects.toMatchObject({
       response: {
-        type: 'about:blank',
-        title: 'Unauthorized',
-        status: 401,
+        type: RFC_7807_TYPE_ABOUT_BLANK,
+        title: AUTH_ERROR_TITLE_UNAUTHORIZED,
+        status: AUTH_HTTP_STATUS_UNAUTHORIZED,
       },
     });
   });
@@ -163,14 +171,14 @@ describe('AuthService', () => {
       const stateCookieValue = Buffer.from(JSON.stringify(stateData), 'utf8').toString('base64url');
 
       const result = await service.handleCallback({
-        provider: 'google',
+        provider: OAUTH_PROVIDER_GOOGLE,
         code: 'auth-code',
         state: 'test-state',
-        cookieHeader: `oauth_state_google=${stateCookieValue}`,
+        cookieHeader: `${OAUTH_STATE_COOKIE_PREFIX}google=${stateCookieValue}`,
       });
 
       expect(result.accessToken).toBe('signed-access-token');
-      expect(result.refreshCookie.name).toBe('refreshToken');
+      expect(result.refreshCookie.name).toBe(REFRESH_TOKEN_COOKIE_NAME);
       expect(result.refreshCookie.options.httpOnly).toBe(true);
       expect(databaseClient.insert).toHaveBeenCalledTimes(2);
     } finally {
@@ -188,16 +196,16 @@ describe('AuthService', () => {
 
     await expect(
       service.handleCallback({
-        provider: 'google',
+        provider: OAUTH_PROVIDER_GOOGLE,
         code: 'auth-code',
         state: 'test-state',
         cookieHeader: undefined,
       }),
     ).rejects.toMatchObject({
       response: {
-        type: 'about:blank',
-        title: 'Unauthorized',
-        status: 401,
+        type: RFC_7807_TYPE_ABOUT_BLANK,
+        title: AUTH_ERROR_TITLE_UNAUTHORIZED,
+        status: AUTH_HTTP_STATUS_UNAUTHORIZED,
       },
     });
   });
@@ -210,10 +218,10 @@ describe('AuthService', () => {
     };
 
     const service = new AuthService(databaseClient as unknown as MockDb, jwtService, envService);
-    const result = await service.signOut('refreshToken=some-token-value');
+    const result = await service.signOut(`${REFRESH_TOKEN_COOKIE_NAME}=some-token-value`);
 
     expect(databaseClient.delete).toHaveBeenCalled();
-    expect(result.clearCookie.name).toBe('refreshToken');
+    expect(result.clearCookie.name).toBe(REFRESH_TOKEN_COOKIE_NAME);
     expect(result.clearCookie.options.httpOnly).toBe(true);
   });
 
@@ -226,6 +234,6 @@ describe('AuthService', () => {
     const result = await service.signOut(undefined);
 
     expect(databaseClient.delete).not.toHaveBeenCalled();
-    expect(result.clearCookie.name).toBe('refreshToken');
+    expect(result.clearCookie.name).toBe(REFRESH_TOKEN_COOKIE_NAME);
   });
 });

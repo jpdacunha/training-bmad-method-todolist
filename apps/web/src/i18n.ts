@@ -2,6 +2,12 @@ import i18n from 'i18next';
 import { initReactI18next } from 'react-i18next';
 import en from './locales/en.json';
 import fr from './locales/fr.json';
+import {
+  LANGUAGE_EN,
+  LANGUAGE_FR,
+  LANGUAGE_DETECTION_PREFIX_FR,
+  I18N_FALLBACK_LANGUAGE,
+} from './constants/app.constants';
 
 /**
  * i18n configuration — react-i18next
@@ -11,11 +17,11 @@ import fr from './locales/fr.json';
  */
 i18n.use(initReactI18next).init({
   resources: {
-    en: { translation: en },
-    fr: { translation: fr },
+    [LANGUAGE_EN]: { translation: en },
+    [LANGUAGE_FR]: { translation: fr },
   },
-  lng: typeof navigator !== 'undefined' && navigator.language.startsWith('fr') ? 'fr' : 'en',
-  fallbackLng: 'en',
+  lng: typeof navigator !== 'undefined' && navigator.language.startsWith(LANGUAGE_DETECTION_PREFIX_FR) ? LANGUAGE_FR : LANGUAGE_EN,
+  fallbackLng: I18N_FALLBACK_LANGUAGE,
   interpolation: {
     escapeValue: false,
   },

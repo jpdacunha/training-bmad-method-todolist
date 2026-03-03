@@ -4,6 +4,7 @@ import { AppBar, Box, Toolbar, Typography, IconButton, Button } from '@mui/mater
 import { Brightness4, Brightness7 } from '@mui/icons-material';
 import { useUiStore } from '../stores/ui.store';
 import { useLanguageStore } from '../stores/language.store';
+import { LANGUAGE_EN, LANGUAGE_FR, THEME_MODE_DARK } from '../constants/app.constants';
 
 /**
  * Main application layout with header
@@ -16,7 +17,7 @@ export function AppLayout() {
   const { language, setLanguage } = useLanguageStore();
 
   const handleLanguageToggle = () => {
-    const newLang = language === 'en' ? 'fr' : 'en';
+    const newLang = language === LANGUAGE_EN ? LANGUAGE_FR : LANGUAGE_EN;
     setLanguage(newLang);
     i18n.changeLanguage(newLang);
   };
@@ -30,11 +31,11 @@ export function AppLayout() {
           </Typography>
 
           <Button color="inherit" onClick={handleLanguageToggle} sx={{ textTransform: 'uppercase' }}>
-            {language === 'en' ? t('common.switchToFrench') : t('common.switchToEnglish')}
+            {language === LANGUAGE_EN ? t('common.switchToFrench') : t('common.switchToEnglish')}
           </Button>
 
           <IconButton color="inherit" onClick={toggleTheme} aria-label={t('common.toggleTheme')}>
-            {themeMode === 'dark' ? <Brightness7 /> : <Brightness4 />}
+            {themeMode === THEME_MODE_DARK ? <Brightness7 /> : <Brightness4 />}
           </IconButton>
         </Toolbar>
       </AppBar>

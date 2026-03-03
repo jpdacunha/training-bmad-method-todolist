@@ -14,13 +14,26 @@ import { ThrottlerGuard } from '@nestjs/throttler';
 import { Request, Response } from 'express';
 import { oauthProviderSchema } from '@training-bmad-method-todolist/shared';
 import { AuthService, OAuthProvider } from './auth.service';
+import {
+  AUTH_ROUTE_PREFIX,
+  AUTH_LOGIN_PATH,
+  AUTH_CALLBACK_PATH,
+  AUTH_REFRESH_PATH,
+  AUTH_SIGN_OUT_PATH,
+  AUTH_ERROR_TITLE_INVALID_CALLBACK,
+  AUTH_ERROR_DETAIL_MISSING_CALLBACK_PARAMS,
+  AUTH_ERROR_TITLE_INVALID_PROVIDER,
+  AUTH_ERROR_DETAIL_INVALID_PROVIDER,
+  AUTH_HTTP_STATUS_BAD_REQUEST,
+  RFC_7807_TYPE_ABOUT_BLANK,
+} from './auth.constants';
 
-@Controller('v1/auth')
+@Controller(AUTH_ROUTE_PREFIX)
 @UseGuards(ThrottlerGuard)
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
-  @Get('login/:provider')
+  @Get(AUTH_LOGIN_PATH)
   login(
     @Param('provider') providerInput: string,
     @Res({ passthrough: true }) response: Response,
@@ -35,7 +48,7 @@ export class AuthController {
     };
   }
 
-  @Get('callback/:provider')
+  @Get(AUTH_CALLBACK_PATH)
   async callback(
     @Param('provider') providerInput: string,
     @Query('code') code: string | undefined,
@@ -47,10 +60,10 @@ export class AuthController {
 
     if (!code || !state) {
       throw new BadRequestException({
-        type: 'about:blank',
-        title: 'Invalid OAuth callback input',
-        status: 400,
-        detail: 'Missing OAuth callback query parameters.',
+        type: RFC_7807_TYPE_ABOUT_BLANK,
+        title: AUTH_ERROR_TITLE_INVALID_CALLBACK,
+        status: AUTH_HTTP_STATUS_BAD_REQUEST,
+        detail: AUTH_ERROR_DETAIL_MISSING_CALLBACK_PARAMS,
       });
     }
 
@@ -73,7 +86,7 @@ export class AuthController {
     };
   }
 
-  @Post('refresh')
+  @Post(AUTH_REFRESH_PATH)
   @HttpCode(200)
   async refresh(
     @Req() request: Request,
@@ -88,7 +101,7 @@ export class AuthController {
     };
   }
 
-  @Post('sign-out')
+  @Post(AUTH_SIGN_OUT_PATH)
   @HttpCode(200)
   async signOut(
     @Req() request: Request,
@@ -106,10 +119,10 @@ export class AuthController {
     const result = oauthProviderSchema.safeParse(providerInput);
     if (!result.success) {
       throw new BadRequestException({
-        type: 'about:blank',
-        title: 'Invalid OAuth provider',
-        status: 400,
-        detail: 'Provider must be google or github.',
+        type: RFC_7807_TYPE_ABOUT_BLANK,
+        title: AUTH_ERROR_TITLE_INVALID_PROVIDER,
+        status: AUTH_HTTP_STATUS_BAD_REQUEST,
+        detail: AUTH_ERROR_DETAIL_INVALID_PROVIDER,
       });
     }
 

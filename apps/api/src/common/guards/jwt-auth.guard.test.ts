@@ -2,6 +2,7 @@ import { ExecutionContext, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { JwtAuthGuard } from './jwt-auth.guard';
 import { EnvService } from '../../config/env.service';
+import { AUTH_HEADER_BEARER_PREFIX } from '../../modules/auth/auth.constants';
 
 describe('JwtAuthGuard', () => {
   const createExecutionContext = (authorization?: string): ExecutionContext => {
@@ -25,7 +26,7 @@ describe('JwtAuthGuard', () => {
     } as unknown as JwtService;
     const envService = { jwtSecret: 'test-secret' } as EnvService;
     const guard = new JwtAuthGuard(jwtService, envService);
-    const context = createExecutionContext('Bearer valid-token');
+    const context = createExecutionContext(`${AUTH_HEADER_BEARER_PREFIX}valid-token`);
 
     await expect(guard.canActivate(context)).resolves.toBe(true);
   });
@@ -47,7 +48,7 @@ describe('JwtAuthGuard', () => {
     } as unknown as JwtService;
     const envService = { jwtSecret: 'test-secret' } as EnvService;
     const guard = new JwtAuthGuard(jwtService, envService);
-    const context = createExecutionContext('Bearer invalid-token');
+    const context = createExecutionContext(`${AUTH_HEADER_BEARER_PREFIX}invalid-token`);
 
     await expect(guard.canActivate(context)).rejects.toBeInstanceOf(UnauthorizedException);
   });

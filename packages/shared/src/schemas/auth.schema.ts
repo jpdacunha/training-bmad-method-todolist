@@ -1,6 +1,7 @@
 import { z } from 'zod';
+import { OAUTH_PROVIDERS } from '../constants/auth.constants';
 
-export const oauthProviderSchema = z.enum(['google', 'github']);
+export const oauthProviderSchema = z.enum(OAUTH_PROVIDERS);
 
 export const loginRequestSchema = z.object({
   provider: oauthProviderSchema,

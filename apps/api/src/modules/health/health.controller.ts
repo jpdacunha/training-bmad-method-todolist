@@ -1,14 +1,20 @@
 import { Controller, Get } from '@nestjs/common';
 import { ApiOperation, ApiResponse } from '@nestjs/swagger';
+import {
+  HEALTH_ROUTE_PREFIX,
+  HEALTH_STATUS_OK,
+  HEALTH_SWAGGER_SUMMARY,
+  HEALTH_SWAGGER_DESCRIPTION,
+} from './health.constants';
 
-@Controller('health')
+@Controller(HEALTH_ROUTE_PREFIX)
 export class HealthController {
   @Get()
-  @ApiOperation({ summary: 'Health check endpoint' })
-  @ApiResponse({ status: 200, description: 'Application is healthy' })
+  @ApiOperation({ summary: HEALTH_SWAGGER_SUMMARY })
+  @ApiResponse({ status: 200, description: HEALTH_SWAGGER_DESCRIPTION })
   check() {
     return {
-      status: 'ok',
+      status: HEALTH_STATUS_OK,
       timestamp: new Date().toISOString(),
     };
   }

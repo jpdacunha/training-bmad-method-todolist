@@ -4,6 +4,16 @@ import request from 'supertest';
 import { AppModule } from '../../app.module';
 import { DATABASE_POOL } from '../../database/database.constants';
 import { setupTestEnv } from '../../test/setup-test-env';
+import { API_GLOBAL_PREFIX } from '../../constants/app.constants';
+import {
+  AUTH_ERROR_TITLE_INVALID_PROVIDER,
+  AUTH_ERROR_TITLE_INVALID_CALLBACK,
+  AUTH_ERROR_TITLE_UNAUTHORIZED,
+  AUTH_ERROR_DETAIL_REFRESH_MISSING,
+  AUTH_HTTP_STATUS_BAD_REQUEST,
+  OAUTH_STATE_COOKIE_PREFIX,
+  REFRESH_TOKEN_COOKIE_NAME,
+} from '../auth/auth.constants';
 
 describe('AuthController HTTP integration', () => {
   let app: INestApplication;
@@ -19,7 +29,7 @@ describe('AuthController HTTP integration', () => {
       .compile();
 
     app = moduleRef.createNestApplication();
-    app.setGlobalPrefix('api');
+    app.setGlobalPrefix(API_GLOBAL_PREFIX);
     await app.init();
   });
 
@@ -40,7 +50,7 @@ describe('AuthController HTTP integration', () => {
     const setCookieHeader = response.headers['set-cookie'];
     expect(setCookieHeader).toBeDefined();
     const stateCookie = Array.isArray(setCookieHeader)
-      ? setCookieHeader.find((c: string) => c.startsWith('oauth_state_google='))
+      ? setCookieHeader.find((c: string) => c.startsWith(`${OAUTH_STATE_COOKIE_PREFIX}google=`))
       : setCookieHeader;
     expect(stateCookie).toBeDefined();
   });
@@ -58,7 +68,7 @@ describe('AuthController HTTP integration', () => {
     const setCookieHeader = response.headers['set-cookie'];
     expect(setCookieHeader).toBeDefined();
     const stateCookie = Array.isArray(setCookieHeader)
-      ? setCookieHeader.find((c: string) => c.startsWith('oauth_state_github='))
+      ? setCookieHeader.find((c: string) => c.startsWith(`${OAUTH_STATE_COOKIE_PREFIX}github=`))
       : setCookieHeader;
     expect(stateCookie).toBeDefined();
   });
@@ -68,8 +78,8 @@ describe('AuthController HTTP integration', () => {
       .get('/api/v1/auth/login/invalid')
       .expect(400);
 
-    expect(response.body).toHaveProperty('title', 'Invalid OAuth provider');
-    expect(response.body).toHaveProperty('status', 400);
+    expect(response.body).toHaveProperty('title', AUTH_ERROR_TITLE_INVALID_PROVIDER);
+    expect(response.body).toHaveProperty('status', AUTH_HTTP_STATUS_BAD_REQUEST);
   });
 
   it('GET /api/v1/auth/callback/google returns 400 when code/state missing', async () => {
@@ -77,7 +87,7 @@ describe('AuthController HTTP integration', () => {
       .get('/api/v1/auth/callback/google')
       .expect(400);
 
-    expect(response.body).toHaveProperty('title', 'Invalid OAuth callback input');
+    expect(response.body).toHaveProperty('title', AUTH_ERROR_TITLE_INVALID_CALLBACK);
   });
 
   it('POST /api/v1/auth/refresh returns 401 when no refresh cookie', async () => {
@@ -85,8 +95,8 @@ describe('AuthController HTTP integration', () => {
       .post('/api/v1/auth/refresh')
       .expect(401);
 
-    expect(response.body).toHaveProperty('title', 'Unauthorized');
-    expect(response.body).toHaveProperty('detail', 'Refresh token is missing.');
+    expect(response.body).toHaveProperty('title', AUTH_ERROR_TITLE_UNAUTHORIZED);
+    expect(response.body).toHaveProperty('detail', AUTH_ERROR_DETAIL_REFRESH_MISSING);
   });
 
   it('POST /api/v1/auth/sign-out returns 200 and clears cookie', async () => {
@@ -99,7 +109,7 @@ describe('AuthController HTTP integration', () => {
     const setCookieHeader = response.headers['set-cookie'];
     expect(setCookieHeader).toBeDefined();
     const clearCookie = Array.isArray(setCookieHeader)
-      ? setCookieHeader.find((c: string) => c.startsWith('refreshToken='))
+      ? setCookieHeader.find((c: string) => c.startsWith(`${REFRESH_TOKEN_COOKIE_NAME}=`))
       : setCookieHeader;
     expect(clearCookie).toBeDefined();
   });
