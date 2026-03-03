@@ -100,7 +100,8 @@ export const AUTH_ERROR_DETAIL_INVALID_TOKEN = 'Invalid or expired access token.
 /**
  * GitHub email fallback log message
  */
-export const GITHUB_EMAIL_FALLBACK_LOG = 'Failed to fetch GitHub user emails — falling back to empty email.';
+export const GITHUB_EMAIL_FALLBACK_LOG =
+  'Failed to fetch GitHub user emails — falling back to empty email.';
 export const OAUTH_CODE_VALIDATION_FAILED_LOG = 'OAuth code validation failed';
 
 /**

@@ -10,7 +10,10 @@ export const workspaces = pgTable(
       .references(() => users.id, { onDelete: 'cascade' }),
     name: text('name').notNull(),
     createdAt: timestamp('createdAt', { withTimezone: true }).defaultNow().notNull(),
-    updatedAt: timestamp('updatedAt', { withTimezone: true }).defaultNow().notNull().$onUpdate(() => new Date()),
+    updatedAt: timestamp('updatedAt', { withTimezone: true })
+      .defaultNow()
+      .notNull()
+      .$onUpdate(() => new Date()),
   },
   (table) => [index('idx_workspaces_userId').on(table.userId)],
 );

@@ -1,4 +1,10 @@
-import { CanActivate, ExecutionContext, Inject, Injectable, UnauthorizedException } from '@nestjs/common';
+import {
+  CanActivate,
+  ExecutionContext,
+  Inject,
+  Injectable,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { RFC_7807_TYPE_ABOUT_BLANK } from '@training-bmad-method-todolist/shared';
 import { EnvService } from '../../config/env.service';
@@ -18,7 +24,9 @@ export class JwtAuthGuard implements CanActivate {
   ) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
-    const request = context.switchToHttp().getRequest<{ headers: { authorization?: string }; user?: unknown }>();
+    const request = context
+      .switchToHttp()
+      .getRequest<{ headers: { authorization?: string }; user?: unknown }>();
     const authorizationHeader = request.headers.authorization;
 
     if (!authorizationHeader || !authorizationHeader.startsWith(AUTH_HEADER_BEARER_PREFIX)) {

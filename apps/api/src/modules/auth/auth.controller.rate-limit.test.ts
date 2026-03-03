@@ -5,10 +5,7 @@ import request from 'supertest';
 import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
 import { API_GLOBAL_PREFIX } from '../../constants/app.constants';
-import {
-  OAUTH_STATE_COOKIE_PREFIX,
-  AUTH_COOKIE_PATH,
-} from './auth.constants';
+import { OAUTH_STATE_COOKIE_PREFIX, AUTH_COOKIE_PATH } from './auth.constants';
 
 describe('AuthController rate limit', () => {
   let app: INestApplication;

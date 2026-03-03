@@ -10,7 +10,10 @@ export const users = pgTable(
     oauthProvider: text('oauthProvider').notNull(),
     oauthProviderId: text('oauthProviderId').notNull(),
     createdAt: timestamp('createdAt', { withTimezone: true }).defaultNow().notNull(),
-    updatedAt: timestamp('updatedAt', { withTimezone: true }).defaultNow().notNull().$onUpdate(() => new Date()),
+    updatedAt: timestamp('updatedAt', { withTimezone: true })
+      .defaultNow()
+      .notNull()
+      .$onUpdate(() => new Date()),
   },
   (table) => [
     uniqueIndex('idx_users_email').on(table.email),

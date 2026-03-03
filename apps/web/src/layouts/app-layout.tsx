@@ -30,7 +30,11 @@ export function AppLayout() {
             {t('app.title')}
           </Typography>
 
-          <Button color="inherit" onClick={handleLanguageToggle} sx={{ textTransform: 'uppercase' }}>
+          <Button
+            color="inherit"
+            onClick={handleLanguageToggle}
+            sx={{ textTransform: 'uppercase' }}
+          >
             {language === LANGUAGE_EN ? t('common.switchToFrench') : t('common.switchToEnglish')}
           </Button>
 

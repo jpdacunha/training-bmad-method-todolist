@@ -41,7 +41,11 @@ export class AuthController {
     const provider = this.parseProvider(providerInput);
     const loginResponse = this.authService.generateLoginResponse(provider);
 
-    response.cookie(loginResponse.stateCookie.name, loginResponse.stateCookie.value, loginResponse.stateCookie.options);
+    response.cookie(
+      loginResponse.stateCookie.name,
+      loginResponse.stateCookie.value,
+      loginResponse.stateCookie.options,
+    );
 
     return {
       redirectUrl: loginResponse.redirectUrl,
@@ -79,7 +83,10 @@ export class AuthController {
       callbackResponse.refreshCookie.value,
       callbackResponse.refreshCookie.options,
     );
-    response.clearCookie(callbackResponse.stateCookieToClear.name, callbackResponse.stateCookieToClear.options);
+    response.clearCookie(
+      callbackResponse.stateCookieToClear.name,
+      callbackResponse.stateCookieToClear.options,
+    );
 
     return {
       accessToken: callbackResponse.accessToken,
@@ -94,7 +101,11 @@ export class AuthController {
   ): Promise<{ accessToken: string }> {
     const refreshResponse = await this.authService.refreshSession(request.headers.cookie);
 
-    response.cookie(refreshResponse.refreshCookie.name, refreshResponse.refreshCookie.value, refreshResponse.refreshCookie.options);
+    response.cookie(
+      refreshResponse.refreshCookie.name,
+      refreshResponse.refreshCookie.value,
+      refreshResponse.refreshCookie.options,
+    );
 
     return {
       accessToken: refreshResponse.accessToken,

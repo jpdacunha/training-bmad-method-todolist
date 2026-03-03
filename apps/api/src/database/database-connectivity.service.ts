@@ -18,7 +18,7 @@ export class DatabaseConnectivityService implements OnApplicationBootstrap {
       await this.pool.query(DATABASE_CONNECTIVITY_QUERY);
       this.logger.log(DATABASE_CONNECTIVITY_SUCCESS_MESSAGE);
     } catch (error) {
-      const message = error instanceof Error ? error.stack ?? error.message : String(error);
+      const message = error instanceof Error ? (error.stack ?? error.message) : String(error);
       this.logger.error(`${DATABASE_CONNECTIVITY_FAILURE_PREFIX}${message}`);
       throw error;
     }

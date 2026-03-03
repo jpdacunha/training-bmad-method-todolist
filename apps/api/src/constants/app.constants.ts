@@ -26,5 +26,6 @@ export const ENV_LOG_PREFIX = '[Env]';
 export const DATABASE_LOGGER_CONTEXT = 'DatabaseProvider';
 export const DATABASE_INIT_MESSAGE = 'Drizzle database client initialized.';
 export const DATABASE_CONNECTIVITY_QUERY = 'SELECT 1';
-export const DATABASE_CONNECTIVITY_SUCCESS_MESSAGE = 'PostgreSQL connectivity check passed via initialized pool.';
+export const DATABASE_CONNECTIVITY_SUCCESS_MESSAGE =
+  'PostgreSQL connectivity check passed via initialized pool.';
 export const DATABASE_CONNECTIVITY_FAILURE_PREFIX = 'PostgreSQL connectivity check failed: ';

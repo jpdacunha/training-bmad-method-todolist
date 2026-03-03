@@ -18,7 +18,9 @@ describe('databaseProviders', () => {
   });
 
   it('creates database client when pool is available', () => {
-    const clientProvider = databaseProviders.find((provider) => provider.provide === DATABASE_CLIENT);
+    const clientProvider = databaseProviders.find(
+      (provider) => provider.provide === DATABASE_CLIENT,
+    );
     expect(clientProvider).toBeDefined();
 
     const pool = { query: jest.fn() };

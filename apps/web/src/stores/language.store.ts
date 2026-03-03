@@ -24,7 +24,10 @@ export const useLanguageStore = create<LanguageState>()(
   persist(
     (set) => ({
       language:
-        typeof navigator !== 'undefined' && navigator.language.startsWith(LANGUAGE_DETECTION_PREFIX_FR) ? LANGUAGE_FR : LANGUAGE_EN,
+        typeof navigator !== 'undefined' &&
+        navigator.language.startsWith(LANGUAGE_DETECTION_PREFIX_FR)
+          ? LANGUAGE_FR
+          : LANGUAGE_EN,
       setLanguage: (lang: Language) => set({ language: lang }),
     }),
     {

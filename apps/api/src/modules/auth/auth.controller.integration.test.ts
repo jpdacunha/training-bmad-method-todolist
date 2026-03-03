@@ -91,18 +91,14 @@ describe('AuthController HTTP integration', () => {
   });
 
   it('POST /api/v1/auth/refresh returns 401 when no refresh cookie', async () => {
-    const response = await request(app.getHttpServer())
-      .post('/api/v1/auth/refresh')
-      .expect(401);
+    const response = await request(app.getHttpServer()).post('/api/v1/auth/refresh').expect(401);
 
     expect(response.body).toHaveProperty('title', AUTH_ERROR_TITLE_UNAUTHORIZED);
     expect(response.body).toHaveProperty('detail', AUTH_ERROR_DETAIL_REFRESH_MISSING);
   });
 
   it('POST /api/v1/auth/sign-out returns 200 and clears cookie', async () => {
-    const response = await request(app.getHttpServer())
-      .post('/api/v1/auth/sign-out')
-      .expect(200);
+    const response = await request(app.getHttpServer()).post('/api/v1/auth/sign-out').expect(200);
 
     expect(response.body).toEqual({ success: true });
 

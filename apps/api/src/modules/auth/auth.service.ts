@@ -157,9 +157,14 @@ export class AuthService {
     state: string;
     cookieHeader?: string;
   }): Promise<CallbackResponse> {
-    const stateCookieRaw = this.readCookie(input.cookieHeader, this.getOAuthStateCookieName(input.provider));
+    const stateCookieRaw = this.readCookie(
+      input.cookieHeader,
+      this.getOAuthStateCookieName(input.provider),
+    );
     if (!stateCookieRaw) {
-      throw new UnauthorizedException(this.problemDetails(AUTH_ERROR_TITLE_UNAUTHORIZED, AUTH_ERROR_DETAIL_STATE_MISSING));
+      throw new UnauthorizedException(
+        this.problemDetails(AUTH_ERROR_TITLE_UNAUTHORIZED, AUTH_ERROR_DETAIL_STATE_MISSING),
+      );
     }
 
     const decodedState = JSON.parse(Buffer.from(stateCookieRaw, 'base64url').toString('utf8')) as {
@@ -168,13 +173,23 @@ export class AuthService {
     };
 
     if (decodedState.state !== input.state) {
-      throw new UnauthorizedException(this.problemDetails(AUTH_ERROR_TITLE_UNAUTHORIZED, AUTH_ERROR_DETAIL_STATE_INVALID));
+      throw new UnauthorizedException(
+        this.problemDetails(AUTH_ERROR_TITLE_UNAUTHORIZED, AUTH_ERROR_DETAIL_STATE_INVALID),
+      );
     }
 
     const providerClient = await this.getProviderClient(input.provider);
-    const tokenResult = await this.validateAuthorizationCode(input.provider, providerClient, input.code, decodedState.codeVerifier);
+    const tokenResult = await this.validateAuthorizationCode(
+      input.provider,
+      providerClient,
+      input.code,
+      decodedState.codeVerifier,
+    );
     const accessTokenFromProvider = this.extractAccessToken(tokenResult);
-    const providerProfile = await this.fetchProviderProfile(input.provider, accessTokenFromProvider);
+    const providerProfile = await this.fetchProviderProfile(
+      input.provider,
+      accessTokenFromProvider,
+    );
     const user = await this.upsertUser(input.provider, providerProfile);
     const accessToken = this.issueAccessToken(user);
     const refreshTokenValue = this.generateUrlSafeToken(48);
@@ -209,7 +224,9 @@ export class AuthService {
   async refreshSession(cookieHeader?: string): Promise<RefreshResponse> {
     const currentRefreshToken = this.readCookie(cookieHeader, REFRESH_TOKEN_COOKIE_NAME);
     if (!currentRefreshToken) {
-      throw new UnauthorizedException(this.problemDetails(AUTH_ERROR_TITLE_UNAUTHORIZED, AUTH_ERROR_DETAIL_REFRESH_MISSING));
+      throw new UnauthorizedException(
+        this.problemDetails(AUTH_ERROR_TITLE_UNAUTHORIZED, AUTH_ERROR_DETAIL_REFRESH_MISSING),
+      );
     }
 
     const hashedToken = this.hashToken(currentRefreshToken);
@@ -222,7 +239,9 @@ export class AuthService {
     const refreshTokenRecord: RefreshToken | undefined = foundRefreshTokens[0];
 
     if (!refreshTokenRecord) {
-      throw new UnauthorizedException(this.problemDetails(AUTH_ERROR_TITLE_UNAUTHORIZED, AUTH_ERROR_DETAIL_REFRESH_INVALID));
+      throw new UnauthorizedException(
+        this.problemDetails(AUTH_ERROR_TITLE_UNAUTHORIZED, AUTH_ERROR_DETAIL_REFRESH_INVALID),
+      );
     }
 
     const foundUsers = await this.db
@@ -232,7 +251,9 @@ export class AuthService {
       .limit(1);
     const user: User | undefined = foundUsers[0];
     if (!user) {
-      throw new UnauthorizedException(this.problemDetails(AUTH_ERROR_TITLE_UNAUTHORIZED, AUTH_ERROR_DETAIL_USER_NOT_FOUND));
+      throw new UnauthorizedException(
+        this.problemDetails(AUTH_ERROR_TITLE_UNAUTHORIZED, AUTH_ERROR_DETAIL_USER_NOT_FOUND),
+      );
     }
 
     await this.db.delete(refreshTokens).where(eq(refreshTokens.id, refreshTokenRecord.id));
@@ -256,10 +277,14 @@ export class AuthService {
     };
   }
 
-  async signOut(cookieHeader?: string): Promise<{ clearCookie: { name: string; options: CookieOptions } }> {
+  async signOut(
+    cookieHeader?: string,
+  ): Promise<{ clearCookie: { name: string; options: CookieOptions } }> {
     const currentRefreshToken = this.readCookie(cookieHeader, REFRESH_TOKEN_COOKIE_NAME);
     if (currentRefreshToken) {
-      await this.db.delete(refreshTokens).where(eq(refreshTokens.token, this.hashToken(currentRefreshToken)));
+      await this.db
+        .delete(refreshTokens)
+        .where(eq(refreshTokens.token, this.hashToken(currentRefreshToken)));
     }
 
     return {
@@ -293,12 +318,19 @@ export class AuthService {
     );
   }
 
-  private buildAuthorizationUrl(provider: OAuthProvider, state: string, codeVerifier: string): string {
+  private buildAuthorizationUrl(
+    provider: OAuthProvider,
+    state: string,
+    codeVerifier: string,
+  ): string {
     const redirectUri =
       provider === OAUTH_PROVIDER_GOOGLE
         ? this.envService.googleRedirectUri
         : this.envService.githubRedirectUri;
-    const clientId = provider === OAUTH_PROVIDER_GOOGLE ? this.envService.googleClientId : this.envService.githubClientId;
+    const clientId =
+      provider === OAUTH_PROVIDER_GOOGLE
+        ? this.envService.googleClientId
+        : this.envService.githubClientId;
 
     if (provider === OAUTH_PROVIDER_GOOGLE) {
       const url = new URL(GOOGLE_AUTHORIZATION_URL);
@@ -322,16 +354,29 @@ export class AuthService {
     return url.toString();
   }
 
-  private async validateAuthorizationCode(provider: OAuthProvider, providerClient: unknown, code: string, codeVerifier: string): Promise<unknown> {
+  private async validateAuthorizationCode(
+    provider: OAuthProvider,
+    providerClient: unknown,
+    code: string,
+    codeVerifier: string,
+  ): Promise<unknown> {
     try {
       if (provider === OAUTH_PROVIDER_GOOGLE) {
-        return await (providerClient as GoogleProviderClient).validateAuthorizationCode(code, codeVerifier);
+        return await (providerClient as GoogleProviderClient).validateAuthorizationCode(
+          code,
+          codeVerifier,
+        );
       }
 
-      return await (providerClient as GithubProviderClient).validateAuthorizationCode(code, codeVerifier);
+      return await (providerClient as GithubProviderClient).validateAuthorizationCode(
+        code,
+        codeVerifier,
+      );
     } catch (error) {
       this.logger.warn(OAUTH_CODE_VALIDATION_FAILED_LOG, error as Error);
-      throw new UnauthorizedException(this.problemDetails(AUTH_ERROR_TITLE_UNAUTHORIZED, AUTH_ERROR_DETAIL_CODE_EXCHANGE_FAILED));
+      throw new UnauthorizedException(
+        this.problemDetails(AUTH_ERROR_TITLE_UNAUTHORIZED, AUTH_ERROR_DETAIL_CODE_EXCHANGE_FAILED),
+      );
     }
   }
 
@@ -342,20 +387,25 @@ export class AuthService {
       accessTokenValue?: string;
     };
 
-    const accessTokenValue = tokenCandidate.accessToken?.() ?? tokenCandidate.access_token ?? tokenCandidate.accessTokenValue;
+    const accessTokenValue =
+      tokenCandidate.accessToken?.() ??
+      tokenCandidate.access_token ??
+      tokenCandidate.accessTokenValue;
 
     if (!accessTokenValue) {
-      throw new UnauthorizedException(this.problemDetails(AUTH_ERROR_TITLE_UNAUTHORIZED, AUTH_ERROR_DETAIL_NO_ACCESS_TOKEN));
+      throw new UnauthorizedException(
+        this.problemDetails(AUTH_ERROR_TITLE_UNAUTHORIZED, AUTH_ERROR_DETAIL_NO_ACCESS_TOKEN),
+      );
     }
 
     return accessTokenValue;
   }
 
-  private async fetchProviderProfile(provider: OAuthProvider, accessToken: string): Promise<ProviderProfile> {
-    const endpoint =
-      provider === OAUTH_PROVIDER_GOOGLE
-        ? GOOGLE_USERINFO_URL
-        : GITHUB_USER_URL;
+  private async fetchProviderProfile(
+    provider: OAuthProvider,
+    accessToken: string,
+  ): Promise<ProviderProfile> {
+    const endpoint = provider === OAUTH_PROVIDER_GOOGLE ? GOOGLE_USERINFO_URL : GITHUB_USER_URL;
 
     const response = await fetch(endpoint, {
       headers: {
@@ -366,7 +416,9 @@ export class AuthService {
     });
 
     if (!response.ok) {
-      throw new UnauthorizedException(this.problemDetails(AUTH_ERROR_TITLE_UNAUTHORIZED, AUTH_ERROR_DETAIL_PROFILE_FETCH_FAILED));
+      throw new UnauthorizedException(
+        this.problemDetails(AUTH_ERROR_TITLE_UNAUTHORIZED, AUTH_ERROR_DETAIL_PROFILE_FETCH_FAILED),
+      );
     }
 
     const payload = (await response.json()) as Record<string, unknown>;
@@ -418,7 +470,11 @@ export class AuthService {
       return '';
     }
 
-    const emails = (await response.json()) as Array<{ email: string; primary: boolean; verified: boolean }>;
+    const emails = (await response.json()) as Array<{
+      email: string;
+      primary: boolean;
+      verified: boolean;
+    }>;
     const primaryVerified = emails.find((e) => e.primary && e.verified);
     const anyVerified = emails.find((e) => e.verified);
 
@@ -448,7 +504,9 @@ export class AuthService {
         .returning();
 
       if (!updatedUser) {
-        throw new UnauthorizedException(this.problemDetails(AUTH_ERROR_TITLE_UNAUTHORIZED, AUTH_ERROR_DETAIL_USER_UPDATE_FAILED));
+        throw new UnauthorizedException(
+          this.problemDetails(AUTH_ERROR_TITLE_UNAUTHORIZED, AUTH_ERROR_DETAIL_USER_UPDATE_FAILED),
+        );
       }
 
       return updatedUser;
@@ -466,7 +524,9 @@ export class AuthService {
       .returning();
 
     if (!insertedUser) {
-      throw new UnauthorizedException(this.problemDetails(AUTH_ERROR_TITLE_UNAUTHORIZED, AUTH_ERROR_DETAIL_USER_CREATE_FAILED));
+      throw new UnauthorizedException(
+        this.problemDetails(AUTH_ERROR_TITLE_UNAUTHORIZED, AUTH_ERROR_DETAIL_USER_CREATE_FAILED),
+      );
     }
 
     return insertedUser;
@@ -529,7 +589,10 @@ export class AuthService {
     return this.envService.isProduction();
   }
 
-  private problemDetails(title: string, detail: string): { type: string; title: string; status: number; detail: string } {
+  private problemDetails(
+    title: string,
+    detail: string,
+  ): { type: string; title: string; status: number; detail: string } {
     return {
       type: RFC_7807_TYPE_ABOUT_BLANK,
       title,

@@ -114,7 +114,9 @@ describe('AuthService', () => {
 
     const service = new AuthService(databaseClient as unknown as MockDb, jwtService, envService);
 
-    await expect(service.refreshSession(`${REFRESH_TOKEN_COOKIE_NAME}=invalid`)).rejects.toMatchObject({
+    await expect(
+      service.refreshSession(`${REFRESH_TOKEN_COOKIE_NAME}=invalid`),
+    ).rejects.toMatchObject({
       response: {
         type: RFC_7807_TYPE_ABOUT_BLANK,
         title: AUTH_ERROR_TITLE_UNAUTHORIZED,
@@ -143,7 +145,8 @@ describe('AuthService', () => {
           }),
         }),
       }),
-      insert: jest.fn()
+      insert: jest
+        .fn()
         .mockReturnValueOnce({
           values: jest.fn().mockReturnValue({
             returning: jest.fn().mockResolvedValue([userRecord]),

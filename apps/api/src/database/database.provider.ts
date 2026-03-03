@@ -1,11 +1,7 @@
 import { Logger } from '@nestjs/common';
 import { drizzle } from 'drizzle-orm/node-postgres';
 import { Pool } from 'pg';
-import {
-  refreshTokens,
-  users,
-  workspaces,
-} from '@training-bmad-method-todolist/shared';
+import { refreshTokens, users, workspaces } from '@training-bmad-method-todolist/shared';
 import { DATABASE_CLIENT, DATABASE_POOL } from './database.constants';
 import { EnvService } from '../config/env.service';
 import { DATABASE_LOGGER_CONTEXT, DATABASE_INIT_MESSAGE } from '../constants/app.constants';

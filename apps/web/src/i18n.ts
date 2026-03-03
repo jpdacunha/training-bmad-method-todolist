@@ -20,7 +20,10 @@ i18n.use(initReactI18next).init({
     [LANGUAGE_EN]: { translation: en },
     [LANGUAGE_FR]: { translation: fr },
   },
-  lng: typeof navigator !== 'undefined' && navigator.language.startsWith(LANGUAGE_DETECTION_PREFIX_FR) ? LANGUAGE_FR : LANGUAGE_EN,
+  lng:
+    typeof navigator !== 'undefined' && navigator.language.startsWith(LANGUAGE_DETECTION_PREFIX_FR)
+      ? LANGUAGE_FR
+      : LANGUAGE_EN,
   fallbackLng: I18N_FALLBACK_LANGUAGE,
   interpolation: {
     escapeValue: false,

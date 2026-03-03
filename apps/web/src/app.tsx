@@ -5,11 +5,7 @@ import { lightTheme, darkTheme } from './theme';
 import { useUiStore } from './stores/ui.store';
 import { AppRoutes } from './routes';
 import './i18n';
-import {
-  THEME_MODE_DARK,
-  QUERY_STALE_TIME_MS,
-  QUERY_RETRY_COUNT,
-} from './constants/app.constants';
+import { THEME_MODE_DARK, QUERY_STALE_TIME_MS, QUERY_RETRY_COUNT } from './constants/app.constants';
 
 /**
  * Root application component — wires all providers
@@ -36,7 +32,10 @@ const queryClient = new QueryClient({
 
 export function App() {
   const themeMode = useUiStore((state) => state.themeMode);
-  const theme = useMemo(() => (themeMode === THEME_MODE_DARK ? darkTheme : lightTheme), [themeMode]);
+  const theme = useMemo(
+    () => (themeMode === THEME_MODE_DARK ? darkTheme : lightTheme),
+    [themeMode],
+  );
 
   return (
     <QueryClientProvider client={queryClient}>
