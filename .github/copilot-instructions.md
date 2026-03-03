@@ -56,7 +56,28 @@
 
 Type `/bmad-` in Copilot Chat to see all available BMAD workflows and agent activators. Agents are also available in the agents dropdown.
 
-## Copilot Rules
+## Copilot Rules — Mandatory Quality & Maintainability Standards
 
-- `md:.github/rules/no-deprecated-or-incompatible-apis.md` — Enforce prohibition of deprecated APIs and known incompatible API combinations.
+**The following rules are NON-NEGOTIABLE quality gates.** They MUST be enforced in ALL contexts without exception:
+
+- **Writing new code** (features, fixes, refactors, tests, scripts, configuration)
+- **Reviewing or modifying existing code**
+- **Code reviews and pull request feedback** — flag any violation as a blocking issue
+- **Generating code suggestions or completions**
+
+Any code that violates these rules is considered defective and must be corrected before it can be accepted. When reviewing code, actively scan for violations and report them explicitly.
+
+### Active Rules
+
+- `md:.github/rules/no-deprecated-or-incompatible-apis.md` — **REQUIRED** — Prohibit deprecated APIs and known incompatible API combinations. Verify compatibility before implementation.
+- `md:.github/rules/env-single-source-of-truth.md` — **REQUIRED** — `.env` is the single source of truth. Centralized validation. Fail-fast on missing required config. No fallbacks, no duplicated values.
+- `md:.github/rules/js-ts-no-hardcoded-strings.md` — **REQUIRED** — Extract all JS/TS string values into dedicated constants files. Semantic `UPPER_SNAKE_CASE` identifiers. Single-point-of-change guarantee.
+
+### Enforcement Behavior
+
+When generating or reviewing code:
+1. **Check every change** against all active rules above.
+2. **Refuse to produce** code that violates any rule — propose a compliant alternative instead.
+3. **During code review**, explicitly call out each violation with the rule name, the offending code, and the required fix.
+4. **Never silently skip** a rule for convenience, speed, or brevity.
 <!-- BMAD:END -->

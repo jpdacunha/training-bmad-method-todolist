@@ -7,6 +7,7 @@ import {
   workspaces,
 } from '@training-bmad-method-todolist/shared';
 import { DATABASE_CLIENT, DATABASE_POOL } from './database.constants';
+import { EnvService } from '../config/env.service';
 
 const logger = new Logger('DatabaseProvider');
 
@@ -16,29 +17,18 @@ const schema = {
   refreshTokens,
 };
 
+export type DatabaseSchema = typeof schema;
+
 export const databaseProviders = [
   {
     provide: DATABASE_POOL,
-    useFactory: () => {
-      const databaseUrl = process.env['DATABASE_URL'];
-
-      if (!databaseUrl) {
-        logger.warn('DATABASE_URL is not set; skipping Drizzle pool initialization.');
-        return null;
-      }
-
-      return new Pool({ connectionString: databaseUrl });
-    },
+    inject: [EnvService],
+    useFactory: (envService: EnvService) => new Pool({ connectionString: envService.databaseUrl }),
   },
   {
     provide: DATABASE_CLIENT,
     inject: [DATABASE_POOL],
-    useFactory: (pool: Pool | null) => {
-      if (!pool) {
-        logger.warn('Drizzle client not initialized because pool is unavailable.');
-        return null;
-      }
-
+    useFactory: (pool: Pool) => {
       logger.log('Drizzle database client initialized.');
 
       return drizzle(pool, { schema });

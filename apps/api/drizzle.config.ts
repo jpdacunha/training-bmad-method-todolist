@@ -1,4 +1,5 @@
 import { defineConfig } from 'drizzle-kit';
+import { getRequiredEnv } from './src/config/env.utils';
 
 export default defineConfig({
   dialect: 'postgresql',
@@ -9,7 +10,7 @@ export default defineConfig({
   ],
   out: './src/database/migrations',
   dbCredentials: {
-    url: process.env['DATABASE_URL'] ?? 'postgresql://postgres:postgres@localhost:5432/todolist',
+    url: getRequiredEnv('DATABASE_URL'),
   },
   strict: true,
   verbose: true,

@@ -6,14 +6,9 @@ import { DATABASE_POOL } from './database.constants';
 export class DatabaseConnectivityService implements OnApplicationBootstrap {
   private readonly logger = new Logger(DatabaseConnectivityService.name);
 
-  constructor(@Inject(DATABASE_POOL) private readonly pool: Pool | null) {}
+  constructor(@Inject(DATABASE_POOL) private readonly pool: Pool) {}
 
   async onApplicationBootstrap(): Promise<void> {
-    if (!this.pool) {
-      this.logger.warn('DATABASE_URL is not set; skipping PostgreSQL connectivity check.');
-      return;
-    }
-
     try {
       await this.pool.query('SELECT 1');
       this.logger.log('PostgreSQL connectivity check passed via initialized pool.');

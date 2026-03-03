@@ -2,9 +2,14 @@ import { INestApplication } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { AppModule } from './app.module';
 import { DATABASE_POOL } from './database/database.constants';
+import { setupTestEnv } from './test/setup-test-env';
 
 describe('AppModule database bootstrap', () => {
   let app: INestApplication;
+
+  beforeAll(() => {
+    setupTestEnv();
+  });
 
   afterEach(async () => {
     await app?.close();

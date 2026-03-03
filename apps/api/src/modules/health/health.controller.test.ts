@@ -3,10 +3,16 @@ import { INestApplication } from '@nestjs/common';
 import request from 'supertest';
 import { HealthController } from './health.controller';
 import { AppModule } from '../../app.module';
+import { DATABASE_POOL } from '../../database/database.constants';
+import { setupTestEnv } from '../../test/setup-test-env';
 
 describe('HealthController', () => {
   let controller: HealthController;
   let app: INestApplication;
+
+  beforeAll(() => {
+    setupTestEnv();
+  });
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -19,7 +25,10 @@ describe('HealthController', () => {
   beforeAll(async () => {
     const moduleRef: TestingModule = await Test.createTestingModule({
       imports: [AppModule],
-    }).compile();
+    })
+      .overrideProvider(DATABASE_POOL)
+      .useValue({ query: jest.fn().mockResolvedValue({ rows: [] }) })
+      .compile();
 
     app = moduleRef.createNestApplication();
     app.setGlobalPrefix('api');
