@@ -55,4 +55,8 @@
 ## Slash Commands
 
 Type `/bmad-` in Copilot Chat to see all available BMAD workflows and agent activators. Agents are also available in the agents dropdown.
+
+## Copilot Rules
+
+- `md:.github/rules/no-deprecated-or-incompatible-apis.md` — Enforce prohibition of deprecated APIs and known incompatible API combinations.
 <!-- BMAD:END -->

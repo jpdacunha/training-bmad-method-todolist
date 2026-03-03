@@ -10,7 +10,7 @@ module.exports = {
   coverageDirectory: '../coverage',
   testEnvironment: 'node',
   moduleNameMapper: {
-    '^@training-bmad-method-todolist/shared$': '<rootDir>/../../packages/shared/src',
-    '^@training-bmad-method-todolist/shared/(.*)$': '<rootDir>/../../packages/shared/src/$1',
+    '^@training-bmad-method-todolist/shared$': '<rootDir>/../../../packages/shared/src',
+    '^@training-bmad-method-todolist/shared/(.*)$': '<rootDir>/../../../packages/shared/src/$1',
   },
 };
