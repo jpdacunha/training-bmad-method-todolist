@@ -1,9 +1,10 @@
 import { useTranslation } from 'react-i18next';
 import { Outlet } from 'react-router';
 import { AppBar, Box, Toolbar, Typography, IconButton, Button } from '@mui/material';
-import { Brightness4, Brightness7 } from '@mui/icons-material';
+import { Brightness4, Brightness7, Logout } from '@mui/icons-material';
 import { useUiStore } from '../stores/ui.store';
 import { useLanguageStore } from '../stores/language.store';
+import { useSignOut } from '../features/auth/use-auth';
 import { LANGUAGE_EN, LANGUAGE_FR, THEME_MODE_DARK } from '../constants/app.constants';
 
 /**
@@ -15,6 +16,7 @@ export function AppLayout() {
   const { t, i18n } = useTranslation();
   const { themeMode, toggleTheme } = useUiStore();
   const { language, setLanguage } = useLanguageStore();
+  const { signOut } = useSignOut();
 
   const handleLanguageToggle = () => {
     const newLang = language === LANGUAGE_EN ? LANGUAGE_FR : LANGUAGE_EN;
@@ -40,6 +42,10 @@ export function AppLayout() {
 
           <IconButton color="inherit" onClick={toggleTheme} aria-label={t('common.toggleTheme')}>
             {themeMode === THEME_MODE_DARK ? <Brightness7 /> : <Brightness4 />}
+          </IconButton>
+
+          <IconButton color="inherit" onClick={signOut} aria-label={t('common.signOut')}>
+            <Logout />
           </IconButton>
         </Toolbar>
       </AppBar>

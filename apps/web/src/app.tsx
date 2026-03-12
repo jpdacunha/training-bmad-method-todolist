@@ -1,11 +1,17 @@
 import { useMemo } from 'react';
 import { ThemeProvider, CssBaseline } from '@mui/material';
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import {
+  QueryClient,
+  QueryClientProvider,
+  QueryCache,
+  MutationCache,
+} from '@tanstack/react-query';
 import { lightTheme, darkTheme } from './theme';
 import { useUiStore } from './stores/ui.store';
 import { AppRoutes } from './routes';
 import './i18n';
 import { THEME_MODE_DARK, QUERY_STALE_TIME_MS, QUERY_RETRY_COUNT } from './constants/app.constants';
+import { handleGlobalUnauthorizedError } from './api/api-client';
 
 /**
  * Root application component — wires all providers
@@ -22,6 +28,16 @@ import { THEME_MODE_DARK, QUERY_STALE_TIME_MS, QUERY_RETRY_COUNT } from './const
  */
 
 const queryClient = new QueryClient({
+  queryCache: new QueryCache({
+    onError: (error) => {
+      void handleGlobalUnauthorizedError(error);
+    },
+  }),
+  mutationCache: new MutationCache({
+    onError: (error) => {
+      void handleGlobalUnauthorizedError(error);
+    },
+  }),
   defaultOptions: {
     queries: {
       staleTime: QUERY_STALE_TIME_MS,

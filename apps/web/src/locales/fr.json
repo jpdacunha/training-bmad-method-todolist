@@ -16,7 +16,13 @@
   "auth": {
     "loginTitle": "Connectez-vous à votre espace de travail",
     "loginWithGoogle": "Se connecter avec Google",
-    "loginWithGithub": "Se connecter avec GitHub"
+    "loginWithGithub": "Se connecter avec GitHub",
+    "errorLoginFailed": "La connexion a échoué. Veuillez réessayer.",
+    "errorMissingCallbackParams": "Réponse d'authentification invalide. Veuillez vous reconnecter.",
+    "errorCallbackUnauthorized": "Votre session n'a pas pu être établie. Veuillez vous reconnecter.",
+    "errorCallbackFailed": "L'authentification a échoué. Veuillez réessayer.",
+    "callbackProcessing": "Connexion en cours...",
+    "backToLogin": "Retour à la connexion"
   },
   "dashboard": {
     "title": "Tableau de bord",

@@ -3,6 +3,7 @@
   "version": "0.0.1",
   "private": true,
   "scripts": {
+    "predev": "pnpm --filter @training-bmad-method-todolist/shared build",
     "build": "nest build",
     "dev": "nest start --watch",
     "start": "nest start",
