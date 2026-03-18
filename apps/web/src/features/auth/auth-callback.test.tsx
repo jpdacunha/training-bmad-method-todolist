@@ -92,4 +92,31 @@ describe('AuthCallback', () => {
       expect(screen.getByTestId('dashboard')).toBeDefined();
     });
   });
+
+  it('falls back across providers when oauth provider is missing in session', async () => {
+    const fetchMock = vi.spyOn(globalThis, 'fetch');
+    fetchMock
+      .mockResolvedValueOnce(
+        new Response(
+          JSON.stringify({
+            type: 'about:blank',
+            title: 'Unauthorized',
+            status: 401,
+            detail: 'OAuth state cookie is missing.',
+          }),
+          { status: 401 },
+        ),
+      )
+      .mockResolvedValueOnce(
+        new Response(JSON.stringify({ accessToken: 'valid-token' }), { status: 200 }),
+      );
+
+    renderCallback();
+
+    await waitFor(() => {
+      expect(screen.getByTestId('dashboard')).toBeDefined();
+    });
+
+    expect(fetchMock).toHaveBeenCalledTimes(2);
+  });
 });

@@ -16,6 +16,7 @@ import {
   QUERY_PARAM_STATE,
   OAUTH_PROVIDER_GOOGLE,
   OAUTH_PROVIDER_GITHUB,
+  OAUTH_PROVIDERS,
   type OAuthProvider,
   ERROR_INVALID_OAUTH_PROVIDER,
 } from '../../constants/auth.constants';
@@ -55,14 +56,11 @@ export function useOAuthCallback() {
 
   const handleCallback = useCallback(
     async (code: string, state: string) => {
-      const provider = sessionStorage.getItem(STORAGE_KEY_OAUTH_PROVIDER);
-
-      if (
-        !provider ||
-        (provider !== OAUTH_PROVIDER_GOOGLE && provider !== OAUTH_PROVIDER_GITHUB)
-      ) {
-        throw new Error(ERROR_INVALID_OAUTH_PROVIDER);
-      }
+      const storedProvider = sessionStorage.getItem(STORAGE_KEY_OAUTH_PROVIDER);
+      const providerCandidates: OAuthProvider[] =
+        storedProvider === OAUTH_PROVIDER_GOOGLE || storedProvider === OAUTH_PROVIDER_GITHUB
+          ? [storedProvider]
+          : OAUTH_PROVIDERS;
 
       sessionStorage.removeItem(STORAGE_KEY_OAUTH_PROVIDER);
 
@@ -70,18 +68,26 @@ export function useOAuthCallback() {
       params.set(QUERY_PARAM_CODE, code);
       params.set(QUERY_PARAM_STATE, state);
 
-      const response = await fetch(
-        `${API_AUTH_CALLBACK_PREFIX}${provider}?${params.toString()}`,
-        { credentials: FETCH_CREDENTIALS_INCLUDE },
-      );
+      let lastError: unknown = new Error(ERROR_INVALID_OAUTH_PROVIDER);
 
-      if (!response.ok) {
-        throw await response.json();
+      for (const provider of providerCandidates) {
+        const response = await fetch(
+          `${API_AUTH_CALLBACK_PREFIX}${provider}?${params.toString()}`,
+          { credentials: FETCH_CREDENTIALS_INCLUDE },
+        );
+
+        if (!response.ok) {
+          lastError = await response.json();
+          continue;
+        }
+
+        const data: { accessToken: string } = await response.json();
+        setAccessToken(data.accessToken);
+        navigate(ROUTE_HOME, { replace: true });
+        return;
       }
 
-      const data: { accessToken: string } = await response.json();
-      setAccessToken(data.accessToken);
-      navigate(ROUTE_HOME, { replace: true });
+      throw lastError;
     },
     [navigate, setAccessToken],
   );

@@ -3,6 +3,10 @@ export const OAUTH_PROVIDER_GITHUB = 'github';
 export type OAuthProvider =
   | typeof OAUTH_PROVIDER_GOOGLE
   | typeof OAUTH_PROVIDER_GITHUB;
+export const OAUTH_PROVIDERS: OAuthProvider[] = [
+  OAUTH_PROVIDER_GOOGLE,
+  OAUTH_PROVIDER_GITHUB,
+];
 
 /**
  * Auth route paths

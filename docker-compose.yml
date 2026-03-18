@@ -21,6 +21,9 @@ services:
       context: .
       dockerfile: apps/api/Dockerfile
       target: development
+    post_start:
+      - command: /app/apps/api/scripts/upgrade-db.sh
+        privileged: true
     ports:
       - "3000:3000"
     depends_on:
@@ -44,6 +47,7 @@ services:
       GITHUB_CLIENT_SECRET: ${GITHUB_CLIENT_SECRET}
       GITHUB_REDIRECT_URI: ${GITHUB_REDIRECT_URI}
     volumes:
+      - ./apps/api/scripts:/app/apps/api/scripts
       - ./apps/api/src:/app/apps/api/src
       - ./packages/shared/src:/app/packages/shared/src
 
